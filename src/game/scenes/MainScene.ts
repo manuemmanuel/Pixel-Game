@@ -48,6 +48,12 @@ export class MainScene extends Scene {
   private playerHealthBar!: GameObjects.Rectangle;
   private enemyHealthBar!: GameObjects.Rectangle;
   private bgMusic!: Phaser.Sound.BaseSound;
+  private playerHealthBg!: GameObjects.Rectangle;
+  private enemyHealthBg!: GameObjects.Rectangle;
+  private playerName!: GameObjects.Text;
+  private enemyName!: GameObjects.Text;
+  private playerStats!: GameObjects.Text;
+  private enemyStats!: GameObjects.Text;
 
   constructor() {
     super({ key: 'MainScene' });
@@ -167,10 +173,12 @@ export class MainScene extends Scene {
     enemyBody.setSize(50, 141).setOffset(70, 35);
 
     // Allow fighters to pass through each other horizontally but not vertically
-    this.physics.add.collider(this.player, this.enemy, undefined, (player: any, enemy: any) => {
-      const playerBody = player.body as Physics.Arcade.Body;
-      const enemyBody = enemy.body as Physics.Arcade.Body;
-      // Only allow collision if one is above the other
+    this.physics.add.collider(this.player, this.enemy, undefined, (
+      object1,
+      object2
+    ) => {
+      const playerBody = (object1 as unknown as Fighter).body as Phaser.Physics.Arcade.Body;
+      const enemyBody = (object2 as unknown as Fighter).body as Phaser.Physics.Arcade.Body;
       return Math.abs(playerBody.y - enemyBody.y) > 50;
     });
 
@@ -267,8 +275,8 @@ export class MainScene extends Scene {
     const barHeight = 30;
     const edgePadding = 50;
 
-    // Create health bar backgrounds (darker color)
-    const playerHealthBg = this.add.rectangle(
+    // Create health bar backgrounds and store them as class properties
+    this.playerHealthBg = this.add.rectangle(
       edgePadding + barWidth/2,
       50,
       barWidth + 4,
@@ -276,7 +284,7 @@ export class MainScene extends Scene {
       0x28293D
     ).setDepth(1);
 
-    const enemyHealthBg = this.add.rectangle(
+    this.enemyHealthBg = this.add.rectangle(
       width - (edgePadding + barWidth/2),
       50,
       barWidth + 4,
@@ -301,8 +309,8 @@ export class MainScene extends Scene {
       0xDC2626 // Red color
     ).setDepth(2);
 
-    // Add player names/indicators
-    const playerName = this.add.text(
+    // Store UI elements as class properties
+    this.playerName = this.add.text(
       edgePadding,
       15,
       'ADITHYA',
@@ -313,7 +321,7 @@ export class MainScene extends Scene {
       }
     ).setDepth(2);
 
-    const enemyName = this.add.text(
+    this.enemyName = this.add.text(
       width - edgePadding,
       15,
       'LIDIYA (BOSS)',
@@ -324,8 +332,7 @@ export class MainScene extends Scene {
       }
     ).setOrigin(1, 0).setDepth(2);
 
-    // Add player stats
-    const playerStats = this.add.text(
+    this.playerStats = this.add.text(
       edgePadding,
       70,
       `STR: ${this.player.getStrength()}\nAGI: ${this.player.getAgility()}\nDEF: ${this.player.getDefense()}`,
@@ -337,8 +344,7 @@ export class MainScene extends Scene {
       }
     ).setDepth(2);
 
-    // Add enemy stats
-    const enemyStats = this.add.text(
+    this.enemyStats = this.add.text(
       width - edgePadding,
       70,
       `STR: ???\nAGI: ???\nDEF: ???`,

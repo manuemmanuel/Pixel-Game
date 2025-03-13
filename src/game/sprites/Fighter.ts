@@ -21,10 +21,13 @@ export class Fighter extends Physics.Arcade.Sprite {
   private attackBox!: GameObjects.Rectangle;
   private isDead: boolean = false;
   private isEnemy: boolean;
-  private cursors: any;
-  private attackKey: any;
-  private attack2Key: any;
-  private jumpKey: any;
+  private cursors!: {
+    left: Phaser.Input.Keyboard.Key;
+    right: Phaser.Input.Keyboard.Key;
+  };
+  private attackKey!: Phaser.Input.Keyboard.Key;
+  private attack2Key!: Phaser.Input.Keyboard.Key;
+  private jumpKey!: Phaser.Input.Keyboard.Key;
   private _isAttacking: boolean = false;
   private lastAttackTime: number = 0;
   private currentAttack: number = 1;
